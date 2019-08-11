@@ -1,5 +1,6 @@
 package com.example.springbootfileupload.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,9 @@ import java.util.Map;
 @RestController
 public class UploadController {
 
+    @Value("${file.targetPath}")
+    private String targetFolder;
+
     Map<String, Object> result = new HashMap<>();
     /// Receive message
     @RequestMapping("/uploadFile")
@@ -21,17 +25,9 @@ public class UploadController {
         // File info
         System.out.println("File name = "  + file.getOriginalFilename());
         System.out.println("File type = " + file.getContentType());
+        System.out.println("Target folder = " + targetFolder);
 
-        // Save to disk
-        // file path example 1) Windows c:/, 3) Mac ~/Documents/
-        //String filePath = "~/Documents/";
-        //file.transferTo(new File(filePath + file.getOriginalFilename()));
-
-        String path = System.getProperty ("user.home") + "/Documents/";
-        System.out.println("User Document path "  + path);
-
-        //file.transferTo(new File(path + file.getOriginalFilename()));
-        file.transferTo(new File(path + file.getOriginalFilename()));
+        file.transferTo(new File(targetFolder + file.getOriginalFilename()));
         result.put("Success", true);
         return result;
     }
